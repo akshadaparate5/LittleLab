@@ -643,24 +643,8 @@
             place-items: center
         }
 
-        .task.done {
-            background: #e4f9ec;
-            border: 1px solid #9bd8b4;
-            border-radius: 10px;
-            padding: 6px 8px;
-            margin-left: -8px;
-            margin-right: -8px
-        }
-
         .task.done i {
-            background: #b7e8cd;
-            color: #176b4b;
-            font-weight: 900
-        }
-
-        .task.done span {
-            color: #176b4b;
-            font-weight: 800
+            background: #c8f1db
         }
 
         .inventory {
@@ -1169,18 +1153,14 @@
             }
         }
 
-        /* Final requested removal: inventory collecting function disabled */
-        #inventory,
-        .inventory,
-        .inventory-panel,
-        .inventory-card,
-        .inventory-section,
-        #inventoryPanel,
-        #tote,
-        .tote,
-        .shelf .jar,
+        /* Inventory collecting feature removed while preserving the DOM hooks used by the game */
+        .card:has(#inventory) {
+            display: none !important;
+        }
+
         .jar {
             display: none !important;
+            pointer-events: none !important;
         }
     </style>
 </head>
@@ -1225,6 +1205,7 @@
                     <div class="jar" draggable="false" data-item="Gloves" title="Gloves">🧤</div>
                     <div class="jar" draggable="false" data-item="Notebook" title="Notebook">📒</div>
                     <div class="jar" draggable="false" data-item="Tube rack" title="Tube rack">🧪</div>
+                    <div class="jar" draggable="false" data-item="Wipes" title="Wipes">🧻</div>
                     <button class="station" id="doorstation" data-station="entry"><span class="emoji">🥼</span><b>PPE &
                             entry</b><small>Prepare safely</small></button>
                     <button class="station" id="supplies" data-station="supplies"><span
@@ -1267,7 +1248,12 @@
                     <div id="progressText" class="hint">0 of 5 moments completed</div>
                     <div id="tasks"></div>
                 </div>
-
+                <div class="card">
+                    <h3>🧰 Lab inventory</h3>
+                    <div class="inventory" id="inventory"><span class="hint">Pick up a few items from the shelf.</span>
+                    </div>
+                    <p class="hint">Tip: tap the little jars on the shelf or drag them to your tote.</p>
+                </div>
                 <div class="card">
                     <h3>✨ How to play</h3>
                     <p class="hint">Each day has a different assignment with its own task cards. Complete the mission
@@ -1312,7 +1298,7 @@
             { name: "Beaker", icon: "🥛", type: "Glassware", purpose: "A general laboratory vessel." },
             { name: "Measuring cylinder", icon: "📏", type: "Glassware", purpose: "Measures liquid volume where appropriate." },
             { name: "Forceps", icon: "🗜️", type: "Tool", purpose: "Grips small items when appropriate." },
-            { name: "Disinfectant wipes", icon: "", type: "Cleaning", purpose: "Used with an approved product and procedure." }
+            { name: "Disinfectant wipes", icon: "🧻", type: "Cleaning", purpose: "Used with an approved product and procedure." }
         ];
         const days = [
             {
@@ -1327,7 +1313,7 @@
                 title: "Equipment & inventory", subtitle: "A different assignment: identify the equipment and build a traceable inventory.", tasks: [
                     { id: "identify", station: "supplies", title: "Identify the equipment", desc: "Select the named equipment from the inventory shelf.", kind: "select", prompt: "Find these five items.", options: ["Sterile Petri dishes", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels", "Decorative plant"], correct: ["Sterile Petri dishes", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels"] },
                     { id: "purpose", station: "bench", title: "Match equipment to its purpose", desc: "Choose an item, then select its matching function.", kind: "match", pairs: [["Sterile Petri dishes", "Cultureware"], ["Inoculating loop", "Transfer tool"], ["Tube rack", "Keeps tubes upright"], ["Marker & labels", "Traceable identification"]] },
-                    { id: "inventory", station: "notes", title: "Build the lab inventory", desc: "Collect equipment into the lab tote by tapping an item or dragging it into the inventory panel. Record the inventory ID and condition when you have selected at least five items.", kind: "inventory", items: ["Lab coat", "Nitrile gloves", "Safety goggles", "70% ethanol surface disinfectant", "Sterile Petri dishes", "Nutrient agar medium", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels", "Microscope slide", "Sterile distilled water", "Waste container", "Lab notebook / worksheet", "Pipette", "Pipette tips", "Beaker", "Measuring cylinder", "Forceps", "Disinfectant wipes"] },
+                    { id: "inventory", station: "notes", title: "Record equipment responsibly", desc: "Before a practical, what is the best way to document equipment and materials?", kind: "choice", options: ["Record the item name, ID where applicable, condition and date according to the lab SOP.", "Use equipment without checking labels or condition.", "Write down details only if something goes wrong."], correct: 0, feedback: "Correct! Traceable records and condition checks support good laboratory practice." },
                     { id: "wasteid", station: "cleanup", title: "Identify waste streams", desc: "Identify the safe next step for an item whose waste category is unclear.", kind: "choice", options: ["Put everything in general waste", "Check the labelled waste guidance and ask the supervisor if uncertain", "Mix waste streams to save space"], correct: 1, feedback: "Follow labelled local waste guidance; don't guess or mix streams." }
                 ]
             },
@@ -1411,7 +1397,6 @@
                 changeXP(25, "Task completed!");
                 $("mentorText").textContent = msg || "Task complete. Keep following the approved SOP in real practical work.";
                 renderProgress();
-                showBubble("✓ Checklist updated · +25 XP");
             }
         }
         function wrongAttempt(msg = "Not quite — try again.") {
@@ -1492,7 +1477,7 @@
         $("nextDayBtn").addEventListener("click", () => switchDay(1)); $("prevDayBtn").addEventListener("click", () => switchDay(-1));
         $("skipDayBtn").addEventListener("click", () => { if (day >= days.length - 1) { showBubble("You are already on the final day."); return; } day += 1; bag = new Set(); focus = 1; selectedOrganism = "ecoli"; closeModal(); $("mentorText").textContent = "You skipped ahead. Unfinished tasks stay incomplete, and skipping gives no XP. You can return with Previous day."; document.querySelectorAll(".jar").forEach(x => x.style.opacity = "1"); renderProgress(); showBubble("Skipped to Lab Day " + (day + 1) + "."); });
         document.querySelectorAll(".station").forEach(x => x.addEventListener("click", () => openStation(x.dataset.station)));
-        document.querySelectorAll(".jar").forEach(x => { x.draggable = true; x.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", x.dataset.item); e.dataTransfer.effectAllowed = "copy"; }); x.addEventListener("click", () => { const n = x.dataset.item; addInventoryItem(n); showBubble(n + " added to lab inventory."); }); });
+        document.querySelectorAll(".jar").forEach(x => { x.draggable = false; });
         let playerPos = { x: 46, y: 68 }, dragging = false;
         function moveTo(e) { const r = $("room").getBoundingClientRect(); playerPos.x = Math.max(2, Math.min(94, (e.clientX - r.left) / r.width * 100)); playerPos.y = Math.max(8, Math.min(88, (e.clientY - r.top) / r.height * 100)); $("player").style.left = playerPos.x + "%"; $("player").style.top = playerPos.y + "%" }
         $("room").addEventListener("pointerdown", e => { if (e.target.closest(".station") || e.target.closest(".jar") || e.target.closest("button")) return; dragging = true; moveTo(e); try { $("room").setPointerCapture(e.pointerId) } catch (_) { } });
