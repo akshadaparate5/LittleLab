@@ -1,1 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f7f0f8">
+    <title>Little Lab — Microbiology GLP Training</title>
+    <style>
+        :root {
+            --ink: #30364b;
+            --muted: #72798b;
+            --pink: #ffdce9;
+            --mint: #d8f5e7;
+            --lilac: #e7e0ff;
+            --cream: #fffaf1;
+            --yellow: #fff0bd;
+            --green: #63b99a;
+            --line: #e5e6ed
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 10% 0%, #fff4f7, transparent 35%), #f3f3ed;
+            color: var(--ink);
+            font-family: ui-rounded, "Trebuchet MS", system-ui, sans-serif
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+            border: 0;
+            border-radius: 14px;
+            padding: 10px 13px;
+            font-weight: 850;
+            color: var(--ink);
+            background: white;
+            box-shadow: 0 3px 0 #dfe2df;
+            touch-action: manipulation
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: none
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #fffdf8ed;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #e8e5df;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .brand {
+            font-size: clamp(20px, 3vw, 29px);
+            font-weight: 1000;
+            letter-spacing: -.8px
+        }
+
+        .brand span {
+            color: #50a88e
+        }
+
+        .stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .pill {
+            border: 1px solid #e1e7df;
+            background: #f0faf3;
+            border-radius: 99px;
+            padding: 7px 11px;
+            font-size: 12px;
+            font-weight: 900
+        }
+
+        main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 16px
+        }
+
+        .intro {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 13px
+        }
+
+        .intro h1 {
+            font-size: clamp(23px, 3.3vw, 34px);
+            margin: 0 0 3px
+        }
+
+        .intro p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 290px;
+            gap: 15px;
+            align-items: start
+        }
+
+        .room {
+            position: relative;
+            min-height: 690px;
+            overflow: hidden;
+            border: 5px solid white;
+            border-radius: 26px;
+            background-image: url("lab-background.webp");
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 8px 0 #e0e3d9, 0 15px 30px #687b7120;
+            isolation: isolate;
+            touch-action: manipulation;
+            cursor: crosshair
+        }
+
+        .room:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: #ffffff08;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .wall {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 76px;
+            background: linear-gradient(90deg, #ccebdc, #e3f4e9, #ccebdc);
+            border-bottom: 7px solid #b4d7c6
+        }
+
+        .sign {
+            position: absolute;
+            left: 14px;
+            top: 18px;
+            color: #4f927d;
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 1000
+        }
+
+        .window {
+            position: absolute;
+            top: 10px;
+            left: 38%;
+            width: 125px;
+            height: 48px;
+            background: linear-gradient(#c4eafa 60%, #d9f3cb 60%);
+            border: 5px solid white;
+            border-radius: 10px
+        }
+
+        .window:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            border-left: 4px solid white
+        }
+
+        .poster {
+            position: absolute;
+            right: 5%;
+            top: 12px;
+            background: #fff6d8;
+            border: 3px solid white;
+            border-radius: 9px;
+            padding: 7px;
+            font-size: 10px;
+            font-weight: 950;
+            transform: rotate(2deg)
+        }
+
+        .counter {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #d8eee4, #c4e1d6);
+            border: 4px solid white;
+            border-radius: 16px;
+            box-shadow: 0 5px 0 #b7d2c6
+        }
+
+        .counter:after {
+            content: "";
+            position: absolute;
+            inset: 9px;
+            border: 2px dashed #a9cbbc;
+            border-radius: 8px;
+            pointer-events: none
+        }
+
+        .counter.topbench {
+            left: 16%;
+            right: 16%;
+            top: 142px;
+            height: 75px
+        }
+
+        .counter.leftbench {
+            left: 5%;
+            top: 220px;
+            width: 75px;
+            height: 300px
+        }
+
+        .counter.rightbench {
+            right: 5%;
+            top: 220px;
+            width: 75px;
+            height: 300px
+        }
+
+        .counter.bottombench {
+            left: 16%;
+            right: 16%;
+            top: 500px;
+            height: 75px
+        }
+
+        .zone-label {
+            display: none;
+            position: absolute;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 1000;
+            color: #7d9d8e;
+            pointer-events: none
+        }
+
+        .zone-label.toplabel {
+            top: 122px;
+            left: 40%
+        }
+
+        .zone-label.leftlabel {
+            top: 350px;
+            left: 2%;
+            writing-mode: vertical-rl
+        }
+
+        .zone-label.rightlabel {
+            top: 350px;
+            right: 2%;
+            writing-mode: vertical-rl
+        }
+
+        .zone-label.bottomlabel {
+            top: 580px;
+            left: 40%
+        }
+
+        .station {
+            position: absolute;
+            z-index: 2;
+            width: 112px;
+            min-height: 92px;
+            border: 3px solid white;
+            border-radius: 18px;
+            background: #fffdf0e8;
+            box-shadow: 0 5px 0 #d9dfd6, 0 8px 18px #65796916;
+            text-align: center;
+            padding: 8px 5px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .15s
+        }
+
+        .station:hover,
+        .station:focus-visible {
+            transform: translateY(-3px);
+            outline: 3px solid #80c9ae;
+            outline-offset: 2px
+        }
+
+        .station.done {
+            background: #e4f9ec;
+            border-color: #83d2ac
+        }
+
+        .station .emoji {
+            display: block;
+            font-size: 30px;
+            line-height: 1.1
+        }
+
+        .station b {
+            display: block;
+            font-size: 12px;
+            margin-top: 5px
+        }
+
+        .station small {
+            display: block;
+            color: #7b8290;
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 2px
+        }
+
+        #supplies {
+            left: 24%;
+            top: 82px
+        }
+
+        #bench {
+            left: 41%;
+            top: 178px
+        }
+
+        #microscope {
+            right: 15%;
+            top: 230px
+        }
+
+        #notebook {
+            right: 15%;
+            top: 390px
+        }
+
+        #cleanup {
+            left: 16%;
+            top: 515px
+        }
+
+        #doorstation {
+            left: 3%;
+            top: 85px
+        }
+
+        .shelf {
+            display: none;
+            position: absolute;
+            top: 85px;
+            left: 43%;
+            width: 25%;
+            height: 60px;
+            background: #e8cfaa;
+            border: 4px solid white;
+            border-radius: 10px;
+            box-shadow: 0 4px 0 #d0b58b
+        }
+
+        .shelf:before {
+            content: "SUPPLY SHELF";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -18px;
+            text-align: center;
+            color: #947b5e;
+            font-size: 9px;
+            font-weight: 1000;
+            letter-spacing: 1px
+        }
+
+        .jar {
+            position: absolute;
+            z-index: 4;
+            top: 95px;
+            left: calc(46% + var(--x, 0px));
+            width: 32px;
+            height: 38px;
+            border: 3px solid white;
+            border-radius: 7px 7px 11px 11px;
+            background: #d8f4f0;
+            display: grid;
+            place-items: center;
+            font-size: 17px;
+            box-shadow: 0 3px 0 #bddbd4;
+            cursor: grab;
+            touch-action: none;
+            user-select: none
+        }
+
+        .jar:nth-of-type(2) {
+            --x: 0px
+        }
+
+        .jar:nth-of-type(3) {
+            --x: 38px;
+            background: #ffe7ef
+        }
+
+        .jar:nth-of-type(4) {
+            --x: 76px;
+            background: #eee5ff
+        }
+
+        .jar:nth-of-type(5) {
+            --x: 114px;
+            background: #fff0bd
+        }
+
+        .player {
+            position: absolute;
+            z-index: 6;
+            cursor: grab;
+            left: 46%;
+            top: 68%;
+            width: 54px;
+            height: 72px;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 1px #8885);
+            transition: left .11s, top .11s
+        }
+
+        .head {
+            position: absolute;
+            top: 0;
+            left: 12px;
+            width: 31px;
+            height: 31px;
+            background: #efbd91;
+            border: 3px solid white;
+            border-radius: 50%;
+            z-index: 2
+        }
+
+        .head:before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            width: 31px;
+            height: 17px;
+            background: #63463d;
+            border: 2px solid white;
+            border-radius: 16px 16px 7px 7px
+        }
+
+        .head:after {
+            content: "•  •";
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: #49352e
+        }
+
+        .body {
+            position: absolute;
+            top: 26px;
+            left: 5px;
+            width: 45px;
+            height: 38px;
+            background: white;
+            border: 4px solid #8cc9b0;
+            border-radius: 12px
+        }
+
+        .body:after {
+            content: "✚";
+            position: absolute;
+            top: 5px;
+            left: 15px;
+            color: #7bb8a1;
+            font-size: 12px
+        }
+
+        .legs {
+            position: absolute;
+            top: 60px;
+            left: 12px;
+            width: 31px;
+            height: 12px;
+            border-left: 8px solid #50647c;
+            border-right: 8px solid #50647c
+        }
+
+        .plant {
+            display: none;
+            position: absolute;
+            bottom: 12px;
+            left: 45%;
+            font-size: 34px
+        }
+
+        .door {
+            display: none;
+            position: absolute;
+            right: 2%;
+            bottom: 0;
+            width: 62px;
+            height: 98px;
+            border: 4px solid white;
+            border-bottom: 0;
+            border-radius: 12px 12px 0 0;
+            background: #c58e69;
+            text-align: center;
+            padding-top: 24px;
+            font-size: 10px;
+            font-weight: 900;
+            color: white
+        }
+
+        .bubble {
+            position: absolute;
+            z-index: 4;
+            left: 35%;
+            top: 68%;
+            max-width: 60%;
+            background: #fff;
+            border: 2px solid #d8e8dc;
+            border-radius: 12px;
+            padding: 8px 11px;
+            font-size: 11px;
+            font-weight: 900;
+            box-shadow: 0 3px 0 #dce6dc;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s
+        }
+
+        .bubble.show {
+            opacity: 1
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            align-items: center;
+            color: #727b8a;
+            font-size: 12px
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 42px 42px 42px;
+            gap: 5px
+        }
+
+        .dpad button {
+            padding: 8px 0;
+            background: #e5f5eb;
+            box-shadow: 0 3px 0 #c7e1d2
+        }
+
+        .dpad .empty {
+            visibility: hidden
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .card {
+            background: white;
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 0 #e1e5dd
+        }
+
+        .card h3 {
+            margin: 0 0 9px;
+            font-size: 17px
+        }
+
+        .mentor {
+            background: #e5f7ed
+        }
+
+        .mentor .avatar {
+            font-size: 30px;
+            float: left;
+            margin-right: 9px
+        }
+
+        .mentor p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            line-height: 1.45;
+            color: #586579
+        }
+
+        .progress {
+            height: 10px;
+            background: #e8eee8;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 9px 0
+        }
+
+        .progress span {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: #55b99a;
+            transition: width .25s
+        }
+
+        .task {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            font-size: 13px;
+            margin: 10px 0;
+            line-height: 1.35
+        }
+
+        .task i {
+            font-style: normal;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            border-radius: 7px;
+            background: #f0f3ee;
+            display: grid;
+            place-items: center
+        }
+
+        .task.done {
+            background: #e4f9ec;
+            border: 1px solid #9bd8b4;
+            border-radius: 10px;
+            padding: 6px 8px;
+            margin-left: -8px;
+            margin-right: -8px
+        }
+
+        .task.done i {
+            background: #b7e8cd;
+            color: #176b4b;
+            font-weight: 900
+        }
+
+        .task.done span {
+            color: #176b4b;
+            font-weight: 800
+        }
+
+        .inventory {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .item {
+            background: #fff1c9;
+            padding: 7px 9px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #657387;
+            line-height: 1.45
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #7a8490;
+            margin: 15px
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: #25324799;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            z-index: 20
+        }
+
+        .modal.open {
+            display: flex
+        }
+
+        .dialog {
+            width: min(570px, 100%);
+            max-height: 88vh;
+            overflow: auto;
+            background: #fffaf1;
+            border: 4px solid white;
+            border-radius: 25px;
+            padding: 21px;
+            box-shadow: 0 10px 0 #bdc8bf
+        }
+
+        .dialog h2 {
+            margin: 0 0 6px;
+            font-size: 25px
+        }
+
+        .dialog p {
+            line-height: 1.5;
+            color: #657387
+        }
+
+        .dialog .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px
+        }
+
+        .dialog button.primary {
+            background: #d9f5e7
+        }
+
+        .dialog button.secondary {
+            background: #ffe4ec
+        }
+
+        .action-list {
+            display: grid;
+            gap: 8px;
+            margin: 14px 0
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: 2px solid #e7e9e1;
+            border-radius: 13px;
+            padding: 10px
+        }
+
+        .action-row input {
+            width: 20px;
+            height: 20px;
+            accent-color: #57b797
+        }
+
+        .tokenrow {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin: 12px 0
+        }
+
+        .token {
+            background: #fff;
+            border: 2px solid #e2e8df;
+            border-radius: 12px;
+            padding: 10px;
+            min-width: 78px;
+            text-align: center;
+            font-size: 24px;
+            cursor: pointer
+        }
+
+        .token small {
+            display: block;
+            font-size: 10px;
+            font-weight: 800;
+            color: #72798b
+        }
+
+        .notice {
+            background: #eaf8ef;
+            border-radius: 12px;
+            padding: 11px;
+            font-weight: 850;
+            font-size: 13px
+        }
+
+        @media(max-width:900px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .mentor {
+                grid-column: 1/-1
+            }
+        }
+
+        @media(max-width:560px) {
+            header {
+                padding: 10px 12px
+            }
+
+            .wrap,
+            main {
+                padding: 9px
+            }
+
+            .layout {
+                gap: 13px
+            }
+
+            .room {
+                min-height: 690px
+            }
+
+            .window {
+                left: 38%;
+                width: 85px
+            }
+
+            .poster {
+                right: 2%;
+                font-size: 8px
+            }
+
+            .station {
+                width: 91px;
+                min-height: 82px;
+                padding: 7px 3px
+            }
+
+            .station .emoji {
+                font-size: 25px
+            }
+
+            .station b {
+                font-size: 10px
+            }
+
+            #supplies {
+                left: 22%;
+                top: 84px
+            }
+
+            #doorstation {
+                left: 2%;
+                top: 84px
+            }
+
+            #bench {
+                left: 39%;
+                top: 190px
+            }
+
+            #microscope {
+                right: 4%;
+                top: 250px
+            }
+
+            #notebook {
+                right: 4%;
+                top: 410px
+            }
+
+            #cleanup {
+                left: 10%;
+                top: 520px
+            }
+
+            .shelf {
+                left: 41%;
+                width: 32%;
+                top: 105px
+            }
+
+            .jar {
+                top: 115px;
+                width: 27px;
+                height: 34px;
+                left: calc(43% + var(--x, 0px));
+                font-size: 14px
+            }
+
+            .jar:nth-of-type(3) {
+                --x: 30px
+            }
+
+            .jar:nth-of-type(4) {
+                --x: 60px
+            }
+
+            .jar:nth-of-type(5) {
+                --x: 90px
+            }
+
+            .counter.topbench {
+                left: 10%;
+                right: 10%;
+                top: 160px
+            }
+
+            .counter.leftbench {
+                left: 2%;
+                top: 260px;
+                width: 48px;
+                height: 235px
+            }
+
+            .counter.rightbench {
+                right: 2%;
+                top: 260px;
+                width: 48px;
+                height: 235px
+            }
+
+            .counter.bottombench {
+                left: 10%;
+                right: 10%;
+                top: 500px
+            }
+
+            .zone-label.toplabel {
+                top: 140px;
+                left: 36%
+            }
+
+            .zone-label.leftlabel {
+                left: 0;
+                top: 355px;
+                font-size: 8px
+            }
+
+            .zone-label.rightlabel {
+                right: 0;
+                top: 355px;
+                font-size: 8px
+            }
+
+            .zone-label.bottomlabel {
+                top: 580px;
+                left: 33%
+            }
+
+            .player {
+                top: 72%;
+                left: 44%
+            }
+
+            .bubble {
+                left: 24%;
+                top: 70%;
+                max-width: 72%
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr
+            }
+
+            .dpad {
+                grid-template-columns: 48px 48px 48px
+            }
+
+            .dpad button {
+                min-height: 44px
+            }
+
+            .dialog {
+                padding: 16px
+            }
+
+            .intro p {
+                max-width: 100%
+            }
+        }
+
+        .day-actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap
+        }
+
+        .day-actions button {
+            font-size: 12px;
+            padding: 9px 11px
+        }
+
+        .day-actions .next-day {
+            background: #d8f5e7
+        }
+
+        .day-actions button:disabled {
+            opacity: .45;
+            cursor: not-allowed
+        }
+
+        .station b {
+            font-size: 11px
+        }
+
+        .station small {
+            font-size: 9px
+        }
+
+        .interaction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+            margin: 12px 0
+        }
+
+        .lab-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px;
+            background: #fff;
+            border: 2px solid #e4e9e1;
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+            min-height: 52px;
+            color: var(--ink)
+        }
+
+        .lab-item .item-icon {
+            font-size: 23px
+        }
+
+        .lab-item.selected,
+        .lab-item.done {
+            background: #e0f8e9;
+            border-color: #63b99a
+        }
+
+        .lab-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #e4e9e1;
+            border-radius: 11px;
+            margin: 7px 0;
+            font-size: 13px;
+            line-height: 1.35
+        }
+
+        .lab-check input {
+            width: 18px;
+            height: 18px;
+            accent-color: #55b99a;
+            flex-shrink: 0
+        }
+
+        .field {
+            display: block;
+            font-size: 12px;
+            font-weight: 850;
+            margin: 10px 0
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            border: 2px solid #e2e7df;
+            border-radius: 10px;
+            padding: 10px;
+            font: inherit;
+            background: white;
+            color: #30364b
+        }
+
+        .day-card {
+            background: #fff7d8;
+            border: 1px solid #f1dfa2;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.45;
+            margin: 10px 0
+        }
+
+        .specimen-view {
+            background: #e8f7ee;
+            border: 2px solid #cce9d8;
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            min-height: 100px;
+            display: grid;
+            place-items: center;
+            font-size: 18px
+        }
+
+        @media(max-width:560px) {
+            .day-actions {
+                width: 100%
+            }
+
+            .day-actions button {
+                flex: 1
+            }
+
+            .station {
+                background: #fffdf4f2
+            }
+        }
+
+        .station {
+            transition: filter .15s, transform .15s
+        }
+
+        .station:active {
+            transform: scale(.97)
+        }
+
+        .inventory-grid .lab-item {
+            min-height: 62px
+        }
+
+        .drop-ready {
+            outline: 3px dashed #56b998;
+            outline-offset: 3px;
+            background: #e6f8ef !important
+        }
+
+        .inventory-grid {
+            max-height: 300px;
+            overflow: auto;
+            padding: 3px
+        }
+
+        .xp-pop {
+            animation: xpPop .35s ease
+        }
+
+        @keyframes xpPop {
+            0% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.3);
+                color: #29966f
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        /* Final requested removal: inventory collecting function disabled */
+        #inventory,
+        .inventory,
+        .inventory-panel,
+        .inventory-card,
+        .inventory-section,
+        #inventoryPanel,
+        #tote,
+        .tote,
+        .shelf .jar,
+        .jar {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand">🧪 Little <span>Lab</span></div>
+        <div class="stats">
+            <div class="pill">⭐ XP <b id="xp">0</b></div>
+            <div class="pill">🌷 Lab day <b id="day">1</b></div>
+            <div class="pill">🧺 Items <b id="itemCount">0</b></div>
+        </div>
+    </header>
+    <main>
+        <div class="intro">
+            <div>
+                <h1 id="dayHeading">Lab Day 1: Induction & GLP</h1>
+                <p id="daySubtitle">Learn the room, identify equipment, and practise good laboratory habits.</p>
+            </div>
+            <div class="day-actions"><button id="prevDayBtn">← Previous day</button><button id="nextDayBtn"
+                    class="next-day" disabled>Next day →</button><button id="skipDayBtn"
+                    title="Move ahead without completing this day">⏭ Skip day</button><button id="resetBtn">↻ Reset
+                    course</button></div>
+        </div>
+        <div class="layout">
+            <section>
+                <div class="room" id="room" aria-label="Interactive pastel microbiology lab">
+                    <div class="wall">
+                        <div class="sign">LITTLE LAB ✿</div>
+                        <div class="window"></div>
+                        <div class="poster">BE CURIOUS<br>STAY SAFE ✦</div>
+                    </div>
+                    <div class="counter topbench"></div>
+                    <div class="counter leftbench"></div>
+                    <div class="counter rightbench"></div>
+                    <div class="counter bottombench"></div>
+                    <div class="zone-label toplabel">SUPPLY COUNTER</div>
+                    <div class="zone-label leftlabel">WORK AREA</div>
+                    <div class="zone-label rightlabel">OBSERVATION</div>
+                    <div class="zone-label bottomlabel">CLEAN-UP CORNER</div>
+                    <div class="shelf"></div>
+                    <div class="jar" draggable="false" data-item="Gloves" title="Gloves">🧤</div>
+                    <div class="jar" draggable="false" data-item="Notebook" title="Notebook">📒</div>
+                    <div class="jar" draggable="false" data-item="Tube rack" title="Tube rack">🧪</div>
+                    <button class="station" id="doorstation" data-station="entry"><span class="emoji">🥼</span><b>PPE &
+                            entry</b><small>Prepare safely</small></button>
+                    <button class="station" id="supplies" data-station="supplies"><span
+                            class="emoji">🧴</span><b>Materials shelf</b><small>Reagents & tools</small></button>
+                    <button class="station" id="bench" data-station="bench"><span class="emoji">🧫</span><b>Prep
+                            bench</b><small>Set up materials</small></button>
+                    <button class="station" id="microscope" data-station="scope"><span
+                            class="emoji">🔬</span><b>Microscope</b><small>Observe & identify</small></button>
+                    <button class="station" id="notebook" data-station="notes"><span class="emoji">🗂️</span><b>GLP
+                            records</b><small>Labels & records</small></button>
+                    <button class="station" id="cleanup" data-station="cleanup"><span class="emoji">♻️</span><b>Waste &
+                            close</b><small>Segregate safely</small></button>
+                    <div class="player" id="player">
+                        <div class="head"></div>
+                        <div class="body"></div>
+                        <div class="legs"></div>
+                    </div>
+                    <div class="bubble" id="bubble">Ready to explore!</div>
+                    <div class="plant">🪴</div>
+                    <div class="door">EXIT</div>
+                </div>
+                <div class="controls"><span>Move with <b>WASD / arrow keys</b> or tap the arrows.</span>
+                    <div class="dpad"><button class="empty">·</button><button data-move="up"
+                            aria-label="Move up">▲</button><button class="empty">·</button><button data-move="left"
+                            aria-label="Move left">◀</button><button data-move="down"
+                            aria-label="Move down">▼</button><button data-move="right"
+                            aria-label="Move right">▶</button></div>
+                </div>
+            </section>
+            <aside class="sidebar">
+                <div class="card mentor">
+                    <div class="avatar">👩🏻‍🔬</div>
+                    <h3>Mentor Mira</h3>
+                    <p id="mentorText">Welcome to Little Lab! Wander around and tap anything that catches your eye. Your
+                        lab-day checklist will grow as you explore.</p>
+                </div>
+                <div class="card">
+                    <h3 id="checklistTitle">🌱 Day 1 checklist</h3>
+                    <div class="progress"><span id="progressBar"></span></div>
+                    <div id="progressText" class="hint">0 of 5 moments completed</div>
+                    <div id="tasks"></div>
+                </div>
+
+                <div class="card">
+                    <h3>✨ How to play</h3>
+                    <p class="hint">Each day has a different assignment with its own task cards. Complete the mission
+                        tasks to unlock the next day. This is a training simulation; follow your instructor and approved
+                        SOPs in real life.</p><button id="helpBtn">Show controls</button>
+                </div>
+            </aside>
+        </div>
+        <div class="footer">Skipping moves ahead without marking tasks complete or awarding task XP. Made with pastel
+            vibes and curious-scientist energy ✿ · Simulation only</div>
+    </main>
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="dialog">
+            <h2 id="modalTitle">A little lab moment</h2>
+            <p id="modalDesc"></p>
+            <div id="modalBody"></div>
+            <div class="actions"><button class="primary" id="completeBtn">Mark moment complete ✨</button><button
+                    class="secondary" id="closeBtn">Back to the lab</button></div>
+        </div>
+    </div>
+    <script>
+        const $ = id => document.getElementById(id);
+        const stations = [
+            { id: "entry", label: "PPE & entry" }, { id: "supplies", label: "Materials shelf" }, { id: "bench", label: "Prep bench" },
+            { id: "scope", label: "Microscope" }, { id: "notes", label: "GLP records" }, { id: "cleanup", label: "Waste & close" }
+        ];
+        const equipment = [
+            { name: "Lab coat", icon: "🥼", type: "PPE", purpose: "Protective clothing worn as required by local policy." },
+            { name: "Nitrile gloves", icon: "🧤", type: "PPE", purpose: "Hand protection selected for the task and chemical compatibility." },
+            { name: "Safety goggles", icon: "🥽", type: "PPE", purpose: "Eye protection when the risk assessment requires it." },
+            { name: "Sterile Petri dishes", icon: "🧫", type: "Cultureware", purpose: "Containers used in a supervised culture-medium workflow." },
+            { name: "Nutrient agar medium", icon: "🧪", type: "Medium", purpose: "A general-purpose medium used with suitable approved teaching organisms." },
+            { name: "Sterile test tubes", icon: "🧬", type: "Cultureware", purpose: "Hold small volumes or materials in an approved practical." },
+            { name: "Inoculating loop", icon: "〰️", type: "Transfer tool", purpose: "A transfer tool used only as taught and allowed by the SOP." },
+            { name: "70% ethanol surface disinfectant", icon: "🧴", type: "Disinfectant", purpose: "Surface disinfectant used according to label and local SOP." },
+            { name: "Tube rack", icon: "▥", type: "Equipment", purpose: "Keeps tubes upright and organised." },
+            { name: "Marker & labels", icon: "🏷️", type: "Documentation", purpose: "Support clear identification and traceability." },
+            { name: "Waste container", icon: "♻️", type: "Waste", purpose: "Collects waste in its designated waste stream." },
+            { name: "Microscope slide", icon: "🔬", type: "Observation", purpose: "Supports a prepared specimen for microscope observation." },
+            { name: "Pipette", icon: "🧪", type: "Measuring tool", purpose: "Transfers measured liquid as instructed by the approved method." },
+            { name: "Pipette tips", icon: "🔹", type: "Disposable", purpose: "Disposable tips used with compatible pipettes." },
+            { name: "Beaker", icon: "🥛", type: "Glassware", purpose: "A general laboratory vessel." },
+            { name: "Measuring cylinder", icon: "📏", type: "Glassware", purpose: "Measures liquid volume where appropriate." },
+            { name: "Forceps", icon: "🗜️", type: "Tool", purpose: "Grips small items when appropriate." },
+            { name: "Disinfectant wipes", icon: "", type: "Cleaning", purpose: "Used with an approved product and procedure." }
+        ];
+        const days = [
+            {
+                title: "Induction & GLP basics", subtitle: "A first-day induction: prepare the assistant, recognise hazards, and understand lab rules.", tasks: [
+                    { id: "ppe", station: "entry", title: "Complete the PPE check", desc: "Choose the appropriate readiness items for a supervised teaching lab.", kind: "select", prompt: "Select all required readiness items.", options: ["Lab coat", "Eye protection if required by risk assessment", "Suitable gloves if required by task", "Loose sleeves and dangling jewellery"], correct: ["Lab coat", "Eye protection if required by risk assessment", "Suitable gloves if required by task"], feedback: "PPE is selected from the risk assessment and local rules; loose items should be secured." },
+                    { id: "hazards", station: "supplies", title: "Recognise hazard symbols", desc: "Match common hazard pictograms to their general meaning.", kind: "match", pairs: [["🔥 Flame", "Flammable hazard"], ["🧪 Corrosion", "Corrosive hazard"], ["❗ Exclamation", "Harmful / irritant"], ["🧬 Biohazard", "Biological hazard symbol"]] },
+                    { id: "hygiene", station: "bench", title: "Hand-hygiene checkpoint", desc: "Complete the entry checkpoint before touching shared lab equipment.", kind: "checks", options: ["Remove or secure personal items as required.", "Perform hand hygiene according to lab policy.", "Read the day's risk assessment and instructions."] },
+                    { id: "sop", station: "notes", title: "Find the correct procedure", desc: "A classmate asks you to improvise because they cannot find the method. Choose the GLP response.", kind: "choice", options: ["Guess the missing steps", "Use the current approved SOP and ask the supervisor if unclear", "Copy a method from an unrelated website"], correct: 1, feedback: "Use the current approved SOP; ask the supervisor when something is unclear." }
+                ]
+            },
+            {
+                title: "Equipment & inventory", subtitle: "A different assignment: identify the equipment and build a traceable inventory.", tasks: [
+                    { id: "identify", station: "supplies", title: "Identify the equipment", desc: "Select the named equipment from the inventory shelf.", kind: "select", prompt: "Find these five items.", options: ["Sterile Petri dishes", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels", "Decorative plant"], correct: ["Sterile Petri dishes", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels"] },
+                    { id: "purpose", station: "bench", title: "Match equipment to its purpose", desc: "Choose an item, then select its matching function.", kind: "match", pairs: [["Sterile Petri dishes", "Cultureware"], ["Inoculating loop", "Transfer tool"], ["Tube rack", "Keeps tubes upright"], ["Marker & labels", "Traceable identification"]] },
+                    { id: "inventory", station: "notes", title: "Build the lab inventory", desc: "Collect equipment into the lab tote by tapping an item or dragging it into the inventory panel. Record the inventory ID and condition when you have selected at least five items.", kind: "inventory", items: ["Lab coat", "Nitrile gloves", "Safety goggles", "70% ethanol surface disinfectant", "Sterile Petri dishes", "Nutrient agar medium", "Sterile test tubes", "Inoculating loop", "Tube rack", "Marker & labels", "Microscope slide", "Sterile distilled water", "Waste container", "Lab notebook / worksheet", "Pipette", "Pipette tips", "Beaker", "Measuring cylinder", "Forceps", "Disinfectant wipes"] },
+                    { id: "wasteid", station: "cleanup", title: "Identify waste streams", desc: "Identify the safe next step for an item whose waste category is unclear.", kind: "choice", options: ["Put everything in general waste", "Check the labelled waste guidance and ask the supervisor if uncertain", "Mix waste streams to save space"], correct: 1, feedback: "Follow labelled local waste guidance; don't guess or mix streams." }
+                ]
+            },
+            {
+                title: "Workspace readiness", subtitle: "Prepare a simulated laminar-flow workspace using awareness checks, not operating parameters.", tasks: [
+                    { id: "precheck", station: "entry", title: "Pre-use readiness check", desc: "Review the cabinet status before starting a supervised session.", kind: "checks", options: ["Confirm the correct cabinet and current SOP are identified.", "Check service / maintenance status as required by local procedure.", "Stop and ask the supervisor if alarms, damage or abnormal conditions are present."] },
+                    { id: "airflow", station: "bench", title: "Protect the airflow zone", desc: "Choose the best workspace arrangement in the illustrated cabinet.", kind: "choice", options: ["Keep the work zone organised and avoid blocking the designed airflow path", "Pack items tightly against every grille", "Place unrelated personal items inside"], correct: 0, feedback: "Keep the workspace organised and never obstruct designed airflow. Follow the cabinet's own SOP." },
+                    { id: "surface", station: "supplies", title: "Choose the surface-prep materials", desc: "Select the items relevant to a supervised surface-preparation task.", kind: "select", prompt: "Select the appropriate items.", options: ["Approved surface disinfectant", "Compatible wipes specified by SOP", "Marker for labels", "Open drink bottle", "Personal phone"], correct: ["Approved surface disinfectant", "Compatible wipes specified by SOP", "Marker for labels"], feedback: "Use the product and materials specified by the local SOP; keep personal items out." },
+                    { id: "layout", station: "notes", title: "Record workspace readiness", desc: "Make a brief readiness record.", kind: "form", fields: [["Cabinet / workspace ID", "text"], ["Status", "select:Ready per SOP / Not ready — stop and report"], ["Notes or issue to report", "text"]] }
+                ]
+            },
+            {
+                title: "Media & plate workflow", subtitle: "A simulation of preparation planning, plate identification, and batch traceability.", tasks: [
+                    { id: "media", station: "supplies", title: "Recognise the medium", desc: "Identify the role of nutrient agar in a teaching-lab workflow.", kind: "choice", options: ["A general-purpose culture medium for suitable approved teaching organisms", "A disinfectant for benches", "A stain used only to colour microscope lenses"], correct: 0, feedback: "Nutrient agar is a general-purpose medium; use only approved organisms and the assigned SOP." },
+                    { id: "label", station: "notes", title: "Label a simulated plate", desc: "Build a traceable label. Use fictional training identifiers only.", kind: "form", fields: [["Training sample / group ID", "text"], ["Date (training record)", "date"], ["Medium", "select:Nutrient agar — simulation / Other — ask supervisor"], ["Initials / learner ID", "text"]] },
+                    { id: "sequence", station: "bench", title: "Arrange the workflow cards", desc: "Put the high-level workflow concepts in a sensible order. No temperatures, timings or volumes are used in this simulation.", kind: "order", options: ["Review approved SOP and prepare materials", "Confirm labels and traceability", "Carry out supervised preparation using the SOP", "Allow the assigned process to finish as directed", "Record outcome and store/handle as instructed"] },
+                    { id: "batch", station: "cleanup", title: "Check batch traceability", desc: "A plate has no readable ID. What should the assistant do?", kind: "choice", options: ["Guess the identity from appearance", "Set it aside and report it according to SOP; never invent an ID", "Write a random ID"], correct: 1, feedback: "Never guess or invent sample identity. Follow the nonconformance procedure." }
+                ]
+            },
+            {
+                title: "Microscopy & observation", subtitle: "A new assignment: explore teaching-organism morphology and record observations without claiming unsupported identification.", tasks: [
+                    { id: "organism", station: "scope", title: "Explore teaching examples", desc: "Choose a schematic example. These are educational illustrations, not diagnostic images.", kind: "organism" },
+                    { id: "morphology", station: "scope", title: "Describe what you can see", desc: "Choose an observation that matches the selected schematic.", kind: "choice", options: ["Describe visible shape and arrangement only", "Name an organism with certainty from a cartoon", "Claim the sample is safe based on appearance"], correct: 0, feedback: "Record visible features; morphology alone does not establish identity or safety." },
+                    { id: "observation", station: "notes", title: "Write an observation record", desc: "Record the simulated observation with cautious, descriptive language.", kind: "form", fields: [["Slide / teaching example ID", "text"], ["Observed morphology", "select:Rod-like forms / Budding oval forms / Not observed clearly"], ["Observation notes", "text"], ["Limitations / next step", "text"]] },
+                    { id: "scopecare", station: "bench", title: "Handle the microscope responsibly", desc: "Choose the best response after using the instrument.", kind: "choice", options: ["Leave the microscope as found and report any issue; follow the instrument care SOP", "Force a stiff control", "Clean lenses with any available tissue"], correct: 0, feedback: "Follow the instrument's care instructions and report damage; use approved lens materials only." }
+                ]
+            },
+            {
+                title: "Documentation & closeout", subtitle: "The final assignment: traceability, deviations, waste awareness and a responsible close.", tasks: [
+                    { id: "deviation", station: "notes", title: "Report a deviation", desc: "A required label is missing from a simulated item. Record the issue without inventing information.", kind: "form", fields: [["Issue / deviation ID", "text"], ["What was observed?", "text"], ["Immediate action taken (simulation)", "text"], ["Who was informed?", "text"]] },
+                    { id: "segregate", station: "cleanup", title: "Sort simulated waste", desc: "Assign each example to the right next step. Actual disposal follows local biosafety and chemical-waste rules.", kind: "match", pairs: [["Uncontaminated paper wrapper", "General waste if local rules allow"], ["Broken glass / sharp", "Designated sharps or glass procedure"], ["Culture-contaminated disposable", "Approved biological waste stream"], ["Unidentified chemical residue", "Pause and consult the chemical-waste SOP / supervisor"]] },
+                    { id: "close", station: "entry", title: "Complete the closing checklist", desc: "Review the end-of-session responsibilities.", kind: "checks", options: ["Account for materials and return items as instructed.", "Leave equipment and workspace in the state required by SOP.", "Remove PPE and perform hand hygiene as required.", "Report spills, breakage, deviations or missing items."] },
+                    { id: "audit", station: "bench", title: "Final GLP record review", desc: "Check the training record before the course is complete.", kind: "checks", options: ["Record is legible and dated.", "Record has an attributable learner / group ID.", "Observations and deviations are recorded honestly.", "No result or identity has been guessed or backdated."] }
+                ]
+            }
+        ];
+        let xp = 0, activeTask = null, completedByDay = days.map(() => new Set()), bag = new Set(), selectedOrganism = "ecoli", focus = 1;
+        function currentCompleted() { return completedByDay[day] }
+        function shuffledIndices(length) {
+            const a = Array.from({ length }, (_, i) => i);
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; }
+            return a;
+        }
+        // PPE and entry are compulsory at the start of every lab day.
+        days.forEach((d, i) => {
+            if (!d.tasks.some(t => t.id === "daily-ppe")) {
+                d.tasks.unshift({
+                    id: "daily-ppe", station: "entry", title: "Daily PPE & entry check (COMPULSORY)", desc: "Before any other activity, complete the PPE and entry checks for today's session.", kind: "checks", options: [
+                        "Secure long hair and loose items according to lab rules.",
+                        "Wear the lab coat and activity-required PPE.",
+                        "Perform hand hygiene according to the lab's procedure.",
+                        "Review today's risk assessment / briefing and ask if anything is unclear."
+                    ]
+                });
+            }
+        });
+        function renderProgress() {
+            $("xp").textContent = xp; $("day").textContent = day + 1; $("itemCount").textContent = bag.size;
+            $("dayHeading").textContent = `Lab Day ${day + 1}: ${days[day].title}`; $("daySubtitle").textContent = days[day].subtitle; $("checklistTitle").textContent = `🌱 Day ${day + 1} mission`;
+            $("tasks").innerHTML = days[day].tasks.map(t => `<div class="task ${currentCompleted().has(t.id) ? "done" : ""}"><i>${currentCompleted().has(t.id) ? "✓" : "○"}</i><span>${t.title}</span></div>`).join("");
+            $("progressBar").style.width = (currentCompleted().size / days[day].tasks.length * 100) + "%";
+            $("progressText").textContent = `${currentCompleted().size} of ${days[day].tasks.length} custom tasks completed`;
+            $("inventory").innerHTML = bag.size ? [...bag].map(n => `<span class="item">${n}</span>`).join("") : '<span class="hint">Collect equipment for today&#39;s assignment.</span>';
+            document.querySelectorAll(".station").forEach(el => el.classList.toggle("done", days[day].tasks.some(t => t.station === el.dataset.station && currentCompleted().has(t.id))));
+            $("prevDayBtn").disabled = day === 0;
+            $("nextDayBtn").disabled = day === days.length - 1 || currentCompleted().size < days[day].tasks.length;
+            $("nextDayBtn").textContent = day === days.length - 1 ? "Course complete ✓" : currentCompleted().size === days[day].tasks.length ? "Next day →" : "Finish today's tasks to unlock →";
+        }
+        function changeXP(amount, reason) {
+            const before = xp;
+            xp = Math.max(0, Number(xp) + Number(amount));
+            $("xp").textContent = String(xp);
+            $("itemCount").textContent = String(bag.size);
+            showBubble((xp - before >= 0 ? "+" : "") + (xp - before) + " XP · " + reason);
+            const xpEl = $("xp");
+            if (xpEl) { xpEl.classList.remove("xp-pop"); void xpEl.offsetWidth; xpEl.classList.add("xp-pop"); }
+        }
+        function completeTask(id, msg) {
+            if (!currentCompleted().has(id)) {
+                currentCompleted().add(id);
+                changeXP(25, "Task completed!");
+                $("mentorText").textContent = msg || "Task complete. Keep following the approved SOP in real practical work.";
+                renderProgress();
+                showBubble("✓ Checklist updated · +25 XP");
+            }
+        }
+        function wrongAttempt(msg = "Not quite — try again.") {
+            changeXP(-5, "Incorrect attempt");
+            $("mentorText").textContent = msg;
+        }
+        function nearStation(stationId) {
+            const room = $("room").getBoundingClientRect(), player = $("player").getBoundingClientRect();
+            const el = document.querySelector(`.station[data-station="${stationId}"]`);
+            if (!el) return true;
+            const s = el.getBoundingClientRect();
+            const px = player.left + player.width / 2, py = player.top + player.height / 2;
+            const sx = s.left + s.width / 2, sy = s.top + s.height / 2;
+            const scale = Math.max(1, room.width / 900);
+            return Math.hypot(px - sx, py - sy) <= 145 * scale;
+        }
+        function showBubble(t) { $("bubble").textContent = t; $("bubble").classList.add("show"); clearTimeout(showBubble.timer); showBubble.timer = setTimeout(() => $("bubble").classList.remove("show"), 1800) }
+        function addInventoryItem(name, button) {
+            if (!bag.has(name)) { bag.add(name); changeXP(2, name + " collected"); }
+            if (button) { button.classList.add("done"); button.innerHTML = `<span class="item-icon">✓</span><span>${esc(name)} collected</span>`; }
+            const notice = $("taskNotice"); if (notice && activeTask && activeTask.kind === "inventory") { const count = activeTask.items.filter(n => bag.has(n)).length; notice.textContent = `${count} of ${activeTask.items.length} items collected. ${count >= 5 ? "Now save the inventory record." : "Collect at least 5."}`; }
+        }
+        const inventoryDrop = $("inventory");
+        inventoryDrop.addEventListener("dragover", e => { e.preventDefault(); inventoryDrop.classList.add("drop-ready"); });
+        inventoryDrop.addEventListener("dragleave", () => inventoryDrop.classList.remove("drop-ready"));
+        inventoryDrop.addEventListener("drop", e => { e.preventDefault(); inventoryDrop.classList.remove("drop-ready"); const name = e.dataTransfer.getData("text/plain"); if (name) addInventoryItem(name); });
+        function closeModal() { $("modal").classList.remove("open"); activeTask = null }
+        $("closeBtn").addEventListener("click", closeModal); $("modal").addEventListener("click", e => { if (e.target === $("modal")) closeModal() }); document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal() });
+        function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])) }
+        function fieldMarkup(f, i) { const [label, type] = f; if (type === "date") return `<label class="field">${label}<input type="date" data-field="${i}"></label>`; if (type.startsWith("select:")) return `<label class="field">${label}<select data-field="${i}"><option value="">Choose…</option>${type.slice(7).split(" / ").map(o => `<option>${o}</option>`).join("")}</select></label>`; return `<label class="field">${label}<input data-field="${i}" type="text" maxlength="220" placeholder="Enter ${label.toLowerCase()}"></label>` }
+        function openTask(t) {
+            activeTask = t; let body = "";
+            if (t.kind === "select") body = `<div class="day-card">${t.prompt}</div><div class="action-list">${shuffledIndices(t.options.length).map(i => `<label class="lab-check"><input type="checkbox" data-opt="${i}"><span>${t.options[i]}</span></label>`).join("")}</div><div class="notice" id="taskNotice">Select the appropriate items, then check your answer.</div><button class="primary" id="checkTask">Check selection</button>`;
+            else if (t.kind === "choice") body = `<div class="action-list">${shuffledIndices(t.options.length).map(i => `<label class="lab-check"><input type="radio" name="missionChoice" value="${i}"><span>${t.options[i]}</span></label>`).join("")}</div><div class="notice" id="taskNotice">Choose the best response.</div><button class="primary" id="checkTask">Submit answer</button>`;
+            else if (t.kind === "checks") body = `<div class="day-card">Tick each item after reviewing it. These checks teach safe decision-making; your local SOP always takes priority.</div><div class="action-list">${t.options.map((o, i) => `<label class="lab-check"><input type="checkbox" data-check="${i}"><span>${o}</span></label>`).join("")}</div><div class="notice" id="taskNotice">Complete all checks to finish this task.</div>`;
+            else if (t.kind === "match") body = `<div class="day-card">Choose each left-hand item and then its matching purpose. Complete all pairs.</div><div class="interaction-grid">${shuffledIndices(t.pairs.length).map(i => `<button class="lab-item" data-left="${i}">${t.pairs[i][0]}</button>`).join("")}</div><div class="action-list">${shuffledIndices(t.pairs.length).map(i => `<button class="lab-item" style="width:100%" data-right="${i}">${t.pairs[i][1]}</button>`).join("")}</div><div class="notice" id="taskNotice">0/${t.pairs.length} pairs matched.</div>`;
+            else if (t.kind === "inventory") body = `<div class="day-card"><b>Inventory mission:</b> collect at least five different items. Tap an item on this shelf or drag it into the tote on the right. On a phone, tap is easiest. Then complete the inventory record below.</div><div class="interaction-grid inventory-grid">${shuffledIndices(t.items.length).map(i => { const n = t.items[i], e = (equipment.find(x => x.name === n) || {}).icon || "🧰"; return `<button class="lab-item inventory-pick ${bag.has(n) ? "done" : ""}" draggable="true" data-inv-pick="${esc(n)}"><span class="item-icon">${e}</span><span>${esc(n)}${bag.has(n) ? " ✓" : ""}</span></button>` }).join("")}</div><div class="notice" id="taskNotice">${t.items.filter(n => bag.has(n)).length} of ${t.items.length} items collected. Collect at least 5.</div><label class="field">Inventory / batch ID<input id="invId" maxlength="40" placeholder="e.g. INV-D2-GROUP-A"></label><label class="field">Condition of selected equipment<select id="invCondition"><option value="">Choose condition</option><option>Available and clean</option><option>Needs checking</option><option>Damaged — report it</option></select></label><button class="primary" id="checkTask">Save inventory record</button>`;
+            else if (t.kind === "form") body = `<div class="day-card">Use fictional training data only. Required fields must be completed; never invent real sample details.</div>${t.fields.map(fieldMarkup).join("")}<div class="notice" id="taskNotice">Complete all fields, then save.</div><button class="primary" id="checkTask">Save training record</button>`;
+            else if (t.kind === "order") body = `<div class="day-card">Tap the workflow cards in the order you think is appropriate. This is a high-level concept exercise; use the assigned SOP for actual work.</div><div class="action-list" id="orderList">${shuffledIndices(t.options.length).map(i => `<button class="lab-item" style="width:100%" data-order="${i}">＋ ${t.options[i]}</button>`).join("")}</div><div class="notice" id="taskNotice">Selected order: none</div><button class="primary" id="checkTask">Check workflow</button>`;
+            else if (t.kind === "organism") body = `<div class="day-card">These are simplified teaching illustrations of familiar examples, not diagnostic images or proof that any sample is safe.</div><div class="interaction-grid"><button class="lab-item" data-org="ecoli">🦠 <i>E. coli</i> K-12<br><small>rod-shaped schematic</small></button><button class="lab-item" data-org="yeast">🍞 <i>S. cerevisiae</i><br><small>budding yeast schematic</small></button><button class="lab-item" data-org="bacillus">🧫 <i>B. subtilis</i><br><small>rod-shaped schematic</small></button></div><div class="specimen-view" id="specimenView">Choose a teaching example.</div><label class="field">Focus <input id="scopeFocus" type="range" min="1" max="3" value="${focus}"></label><div class="notice" id="taskNotice">Choose a schematic and adjust focus to explore it.</div><button class="primary" id="checkTask">Record that I explored the view</button>`;
+            $("modalTitle").textContent = t.title; $("modalDesc").textContent = t.desc; $("modalBody").innerHTML = body; $("completeBtn").style.display = "none"; $("modal").classList.add("open"); wireTask(t);
+        }
+        function wireTask(t) {
+            const b = $("modalBody"), notice = () => $("taskNotice");
+            b.querySelectorAll("[data-inv-pick]").forEach(x => {
+                x.addEventListener("click", () => addInventoryItem(x.dataset.invPick, x));
+                x.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", x.dataset.invPick); e.dataTransfer.effectAllowed = "copy"; });
+            });
+            b.querySelectorAll("[data-check]").forEach(x => x.addEventListener("change", () => { const all = [...b.querySelectorAll("[data-check]")]; if (all.every(c => c.checked)) { notice().textContent = "All checks complete."; completeTask(t.id) } else notice().textContent = `${all.filter(c => c.checked).length}/${all.length} checks complete.` }));
+            let left = null, matched = new Set();
+            b.querySelectorAll("[data-left]").forEach(x => x.addEventListener("click", () => { left = Number(x.dataset.left); b.querySelectorAll("[data-left]").forEach(y => y.classList.remove("selected")); x.classList.add("selected"); notice().textContent = "Now choose the matching description for: " + t.pairs[left][0] }));
+            b.querySelectorAll("[data-right]").forEach(x => x.addEventListener("click", () => { if (left === null) { notice().textContent = "Select an item first."; return } const r = Number(x.dataset.right); if (left !== r) { notice().textContent = "Not a match. Try another description."; wrongAttempt("That pair does not match. −5 XP — try again."); return } if (matched.has(r)) return; matched.add(r); x.classList.add("done"); b.querySelector(`[data-left="${r}"]`)?.classList.add("done"); notice().textContent = `${matched.size}/${t.pairs.length} pairs matched.`; left = null; if (matched.size === t.pairs.length) completeTask(t.id) }));
+            b.querySelectorAll("[data-org]").forEach(x => x.addEventListener("click", () => { selectedOrganism = x.dataset.org; b.querySelectorAll("[data-org]").forEach(y => y.classList.remove("selected")); x.classList.add("selected"); renderSpecimen() }));
+            const slider = $("scopeFocus"); if (slider) slider.addEventListener("input", () => { focus = Number(slider.value); renderSpecimen() });
+            const check = $("checkTask"); if (check) check.addEventListener("click", () => {
+                if (t.kind === "select") { const chosen = [...b.querySelectorAll("[data-opt]:checked")].map(x => t.options[Number(x.dataset.opt)]); const correct = t.correct || []; const good = chosen.length === correct.length && correct.every(x => chosen.includes(x)); notice().textContent = good ? "Correct — " + (t.feedback || "Good selection.") : "Review your selection and try again."; if (good) completeTask(t.id, t.feedback); else wrongAttempt("Incorrect selection. Review the task and try again."); }
+                else if (t.kind === "choice") { const val = b.querySelector('input[name="missionChoice"]:checked'); if (!val) { notice().textContent = "Choose an answer first."; return } const good = Number(val.value) === t.correct; notice().textContent = good ? "Correct — " + (t.feedback || "Good decision.") : "Not quite. Review the GLP principle and try again."; if (good) completeTask(t.id, t.feedback); else wrongAttempt("Incorrect choice. −5 XP. Review the GLP principle and try again."); }
+                else if (t.kind === "inventory") { const count = t.items.filter(n => bag.has(n)).length; const id = $("invId").value.trim(), condition = $("invCondition").value; if (count < 5 || !id || !condition) { notice().textContent = `Collect at least 5 items and complete both record fields. You have ${count}.`; wrongAttempt("Inventory incomplete. −5 XP — collect more items and finish the record."); return; } notice().textContent = `Inventory saved: ${count} distinct items recorded under ${id} (${condition}).`; completeTask(t.id, "Great inventory work — equipment is collected and its condition is recorded."); }
+                else if (t.kind === "form") { const fields = [...b.querySelectorAll("[data-field]")]; if (fields.some(x => !x.value.trim())) { notice().textContent = "Please complete every field before saving."; return } notice().textContent = "Training record saved for this session."; completeTask(t.id, "A clear training record has been saved.") }
+                else if (t.kind === "order") { const picked = [...b.querySelectorAll("[data-order].done")].sort((a, c) => Number(a.dataset.clickOrder) - Number(c.dataset.clickOrder)).map(x => Number(x.dataset.order)); if (picked.length !== t.options.length) { notice().textContent = "Select all workflow cards first."; return } const correct = picked.every((v, i) => v === i); notice().textContent = correct ? "Workflow order is sensible." : "Review the workflow sequence and arrange the cards again."; if (correct) completeTask(t.id, "Nice sequencing — the cards are in the intended high-level order."); else wrongAttempt("Workflow order is incorrect. −5 XP — try again."); }
+                else if (t.kind === "organism") { if (!selectedOrganism || focus < 2) { notice().textContent = "Choose a teaching example and adjust focus to at least 2."; return } completeTask(t.id, "You explored a schematic teaching-organism view.") }
+            });
+            b.querySelectorAll("[data-order]").forEach(x => x.addEventListener("click", () => { const selected = [...b.querySelectorAll("[data-order].done")].length; if (x.classList.contains("done")) return; x.dataset.clickOrder = String(selected); x.classList.add("done"); x.textContent = `${selected + 1}. ${t.options[Number(x.dataset.order)]}`; notice().textContent = `${selected + 1}/${t.options.length} cards selected. Tap in the order you want to use.` }));
+        }
+        function renderSpecimen() { const v = $("specimenView"); if (!v) return; let html = ""; if (selectedOrganism === "yeast") { html = `<svg viewBox="0 0 300 90">${Array.from({ length: 6 }, (_, i) => `<g transform="translate(${25 + i * 45},${30 + (i % 2) * 15})"><circle r="${8 + focus * 2}" fill="#e8c98e" stroke="#9e8252" stroke-width="2"/><circle cx="10" cy="-7" r="${4 + focus}" fill="#f4dca9" stroke="#9e8252" stroke-width="1.5"/></g>`).join("")}</svg><small><i>Saccharomyces cerevisiae</i> — schematic budding yeast.</small>` } else { const col = selectedOrganism === "ecoli" ? "#e69aaf" : "#9bcbb5", st = selectedOrganism === "ecoli" ? "#9c6079" : "#4e8d75"; html = `<svg viewBox="0 0 300 90">${Array.from({ length: 7 }, (_, i) => `<rect x="${15 + i * 40}" y="${25 + (i % 3) * 11}" width="${24 + focus * 3}" height="10" rx="5" fill="${col}" stroke="${st}" stroke-width="1.5" transform="rotate(${i % 2 ? 15 : -12} ${28 + i * 40} 35)"/>`).join("")}</svg><small>${selectedOrganism === "ecoli" ? "<i>Escherichia coli</i> K-12" : "<i>Bacillus subtilis</i>"} — schematic rods, not an identification result.</small>` } v.innerHTML = html }
+        function openStation(stationId) {
+            const ppeTask = days[day].tasks.find(t => t.id === "daily-ppe") || days[day].tasks.find(t => t.id === "ppe");
+            if (stationId !== "entry" && ppeTask && !currentCompleted().has(ppeTask.id)) {
+                showBubble("PPE & entry is compulsory first!");
+                $("mentorText").textContent = "Complete today's PPE & entry check before starting any other station.";
+                return;
+            }
+            if (!nearStation(stationId)) { showBubble("Move your assistant closer to this station first!"); $("mentorText").textContent = "Walk or drag your assistant near the station, then tap it again."; return; } const tasks = days[day].tasks.filter(t => t.station === stationId && !currentCompleted().has(t.id)); if (!tasks.length) { const already = days[day].tasks.filter(t => t.station === stationId); if (already.length) { showBubble("This station's task is complete for today!"); return } showBubble("No assigned task here today. Try another station."); return } if (tasks.length === 1) { openTask(tasks[0]); return } showTaskPicker(tasks)
+        }
+        function showTaskPicker(tasks) { $("modalTitle").textContent = "Today's assigned tasks"; $("modalDesc").textContent = "Choose which task to work on at this station."; $("modalBody").innerHTML = tasks.map((t, i) => `<button class="lab-item" style="width:100%;margin:7px 0" data-taskpick="${i}">${t.title}</button>`).join(""); $("completeBtn").style.display = "none"; $("modal").classList.add("open"); $("modalBody").querySelectorAll("[data-taskpick]").forEach(b => b.addEventListener("click", () => openTask(tasks[Number(b.dataset.taskpick)]))) }
+        let day = 0; // active course day
+        function switchDay(delta) { if (delta > 0 && currentCompleted().size < days[day].tasks.length) return; day = Math.max(0, Math.min(days.length - 1, day + delta)); bag = new Set(); focus = 1; selectedOrganism = "ecoli"; closeModal(); $("mentorText").textContent = `Welcome to Lab Day ${day + 1}. ${days[day].subtitle}`; document.querySelectorAll(".jar").forEach(x => x.style.opacity = "1"); renderProgress(); showBubble("Lab Day " + (day + 1) + ": " + days[day].title) }
+        $("nextDayBtn").addEventListener("click", () => switchDay(1)); $("prevDayBtn").addEventListener("click", () => switchDay(-1));
+        $("skipDayBtn").addEventListener("click", () => { if (day >= days.length - 1) { showBubble("You are already on the final day."); return; } day += 1; bag = new Set(); focus = 1; selectedOrganism = "ecoli"; closeModal(); $("mentorText").textContent = "You skipped ahead. Unfinished tasks stay incomplete, and skipping gives no XP. You can return with Previous day."; document.querySelectorAll(".jar").forEach(x => x.style.opacity = "1"); renderProgress(); showBubble("Skipped to Lab Day " + (day + 1) + "."); });
+        document.querySelectorAll(".station").forEach(x => x.addEventListener("click", () => openStation(x.dataset.station)));
+        document.querySelectorAll(".jar").forEach(x => { x.draggable = true; x.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", x.dataset.item); e.dataTransfer.effectAllowed = "copy"; }); x.addEventListener("click", () => { const n = x.dataset.item; addInventoryItem(n); showBubble(n + " added to lab inventory."); }); });
+        let playerPos = { x: 46, y: 68 }, dragging = false;
+        function moveTo(e) { const r = $("room").getBoundingClientRect(); playerPos.x = Math.max(2, Math.min(94, (e.clientX - r.left) / r.width * 100)); playerPos.y = Math.max(8, Math.min(88, (e.clientY - r.top) / r.height * 100)); $("player").style.left = playerPos.x + "%"; $("player").style.top = playerPos.y + "%" }
+        $("room").addEventListener("pointerdown", e => { if (e.target.closest(".station") || e.target.closest(".jar") || e.target.closest("button")) return; dragging = true; moveTo(e); try { $("room").setPointerCapture(e.pointerId) } catch (_) { } });
+        $("room").addEventListener("pointermove", e => { if (dragging) moveTo(e) }); $("room").addEventListener("pointerup", () => dragging = false); $("room").addEventListener("pointercancel", () => dragging = false);
+        function move(d) { const s = 3.4; if (d === "up") playerPos.y -= s; if (d === "down") playerPos.y += s; if (d === "left") playerPos.x -= s; if (d === "right") playerPos.x += s; playerPos.x = Math.max(3, Math.min(90, playerPos.x)); playerPos.y = Math.max(8, Math.min(88, playerPos.y)); $("player").style.left = playerPos.x + "%"; $("player").style.top = playerPos.y + "%" }
+        document.addEventListener("keydown", e => { if ($("modal").classList.contains("open")) return; const m = { arrowup: "up", w: "up", arrowdown: "down", s: "down", arrowleft: "left", a: "left", arrowright: "right", d: "right" }; if (m[e.key.toLowerCase()]) { e.preventDefault(); move(m[e.key.toLowerCase()]) } });
+        document.querySelectorAll("[data-move]").forEach(x => { let timer; const run = () => move(x.dataset.move); x.addEventListener("click", run); x.addEventListener("touchstart", e => { e.preventDefault(); run(); timer = setInterval(run, 140) }, { passive: false });["touchend", "touchcancel", "pointerleave"].forEach(ev => x.addEventListener(ev, () => clearInterval(timer))) });
+        $("helpBtn").addEventListener("click", () => openStation("entry"));
+        $("resetBtn").addEventListener("click", () => { day = 0; completedByDay = days.map(() => new Set()); xp = 0; bag = new Set(); focus = 1; selectedOrganism = "ecoli"; closeModal(); playerPos = { x: 46, y: 68 }; $("player").style.left = playerPos.x + "%"; $("player").style.top = playerPos.y + "%"; $("mentorText").textContent = "Welcome to Little Lab! Start with the induction mission."; document.querySelectorAll(".jar").forEach(x => x.style.opacity = "1"); renderProgress(); showBubble("Course reset.") });
+        renderProgress();
+    </script>
+</body>
+
+</html>
